@@ -1,0 +1,8 @@
+{% extends "ground.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block body_container %}
+<div class = "jumbotron">
+    <h1 class= "display-4"> Access Denied {{request.user.username|title}} </h1>
+</div>
+{% endblock %}
