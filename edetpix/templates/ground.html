@@ -7,6 +7,9 @@
         <title>AU ID \o/</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
         <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}">
+        
+        
+            
     </head>
     
     <body>
@@ -17,9 +20,9 @@
                 <ul class="navbar-nav">
                     
                     <li class="nav-item"><a class= "nav-link" href ="{% url 'staffId' %}" >AU Academic Staff </a></li>
-                    <li class="nav-item"><a class= "nav-link" href ="#" > Undergrad</a></li>
+                    <li class="nav-item"><a class= "nav-link" href ="{% url 'ugId' %}" > Undergrad</a></li>
                     <li class="nav-item"><a class= "nav-link" href ="{% url 'pgId' %}"> Postgrad </a></li>
-                    <li class="nav-item"><a class= "nav-link" href ="#"> Ventures Staff </a></li>
+                    <li class="nav-item"><a class= "nav-link" href ="{% url 'venId' %}"> Ventures Staff </a></li>
                     <li class="nav-item"><a class= "nav-link" href ="#"> Non-Academic Staff </a></li>
                     
                     {% if user.is_authenticated %}
@@ -48,10 +51,10 @@
             <strong align='center'> {{ message }}.</strong>
         </div>
 
-        </div>
+       
     {% endfor %}
 {% endif %}
-            
+</div>       
             {% block body_container %}
             
             
