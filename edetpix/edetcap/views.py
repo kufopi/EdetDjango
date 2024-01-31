@@ -2,9 +2,9 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.db.models import Q
-from .models import UniversityStaff, Session,User,Postgrad
+from .models import UniversityStaff, Session,User,Postgrad,Undergrad,VentureStaff
 from django.contrib.auth.models import  Group
-from .forms import UserRegisterForm, UserUpdateForm, UniversityStaffForm,PostgradForm
+from .forms import UserRegisterForm, UserUpdateForm, UniversityStaffForm,PostgradForm,UndergradForm,VentureStaffForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
@@ -23,6 +23,16 @@ def pg_group_check(user):
         return user.groups.filter(name='Postgrad').exists() 
     return False
 
+
+def ug_group_check(user):
+    if user:
+        return user.groups.filter(name='Undergrad').exists() 
+    return False
+
+def ven_group_check(user):
+    if user:
+        return user.groups.filter(name='Ventures Staff').exists() 
+    return False
 
 
 def register(request):
@@ -94,14 +104,14 @@ def loginPage(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        username = request.POST.get('username')
         #email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
-        try:
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, 'User does not exist')
+        # try:
+        #     user = User.objects.get(username=username)
+        # except:
+        #     messages.error(request, 'User does not exist')
 
         user= authenticate(request,username=username, password=password)
         if user is not None:
@@ -140,6 +150,7 @@ def staffId(request):
             designation = desi,
             session = sessi,
             blood_group= request.user.blood_group,
+            passport= request.user.passport
             
         )
         
@@ -204,5 +215,85 @@ def pgId(request):
     return render(request,'uniform.html',context)
 
 
+
+@login_required
+@user_passes_test(ug_group_check, login_url='denied')
+def ugId(request):
+    tit = 'Undergraduate ID'
+    form = UndergradForm()
+    comeback = date.today()+timedelta(days=20)
+    comeback2 = comeback + timedelta(days=10)
+    if request.method=="POST":
+        desi = request.POST.get('level')
+        dept = request.POST.get('department')
+        sessi = Session.objects.all()[0]
+
+        if Undergrad.objects.filter(fellow=request.user,session = sessi).exists():
+            messages.warning(request, f'''You have made a replacement request within the same session!,
+            Visit Mr Edet (ICT Unit) with a Sworn Affidavit and \u20A6 2000 penalty fee''')
+
+
+
+        Undergrad.objects.create(
+            fellow = request.user,
+            matric_id = request.user.staff_id,
+            first_name=request.user.first_name ,
+            middle_name= request.user.middle_name,
+            surname = request.user.surname,
+            gender= request.user.gender,
+            level = desi,
+            department=dept,
+            session = sessi,
+            blood_group= request.user.blood_group,
+            passport= request.user.passport
+
+        )
+        print(f'this is dessi {desi}')
         
-    
+        messages.success(request, f'''Your request has been submitted!''')
+        messages.success(request, f'''Please return between {comeback.strftime("%d/%b/%Y")} and {comeback2.strftime("%d/%b/%Y")} to get your ID card''')
+        return redirect('home')
+    else:
+        form=UndergradForm()
+    context ={
+        'form':form,
+        'tit':tit
+    }
+    return render(request,'uniform.html',context)
+
+
+@login_required
+@user_passes_test(ven_group_check, login_url='denied')
+def venId(request):
+    tit = 'Ventures ID'
+    form = VentureStaffForm()
+    comeback = date.today()+timedelta(days=20)
+    comeback2 = comeback + timedelta(days=10)
+    if request.method=="POST":
+        desi = request.POST.get('designation')
+        sessi = Session.objects.all()[0]
+        VentureStaff.objects.create(
+            fellow = request.user,
+            staff_id = request.user.staff_id,
+            first_name=request.user.first_name ,
+            middle_name= request.user.middle_name,
+            surname = request.user.surname,
+            gender= request.user.gender,
+            designation = desi,
+            session = sessi,
+            blood_group= request.user.blood_group,
+            passport= request.user.passport
+            
+        )
+        
+        messages.success(request, f'Your request has been submitted!')
+        
+        messages.success(request, f'''Please return between {comeback.strftime("%d/%b/%Y")} and {comeback2.strftime("%d/%b/%Y")} to get your ID card''')
+        return redirect('home')
+    else:
+        form=VentureStaffForm()
+    context ={
+        'form':form,
+        'tit':tit
+    }
+    return render(request,'uniform.html',context)

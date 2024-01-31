@@ -10,6 +10,8 @@ urlpatterns = [
     path('staff/', views.staffId, name='staffId'),
     path('deny/', views.denied, name='denied'),
     path('pg/', views.pgId, name='pgId'),
+    path('ug/', views.ugId, name='ugId'),
+    path('venture/', views.venId, name='venId'),
 
 
     

@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import User,UniversityStaff,Postgrad
+from .models import User,UniversityStaff,Postgrad,Undergrad,VentureStaff
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
@@ -38,3 +38,14 @@ class PostgradForm(forms.ModelForm):
         model = Postgrad
         fields = ['session','department','level']
 
+class UndergradForm(forms.ModelForm):
+    
+    class Meta:
+        model = Undergrad
+        fields = ['session','department','level']
+
+class VentureStaffForm(forms.ModelForm):
+    
+    class Meta:
+        model = VentureStaff
+        fields = ['session','designation']

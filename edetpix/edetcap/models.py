@@ -12,6 +12,18 @@ PGLEVEL_CHOICES = (
     ('700','700'),
     ('800','800'),
 )#[tuple([x,x]) for x in range(600,900,100)]
+
+
+UGLEVEL_CHOICES = (
+    ('100','100'),
+    ('200','200'),
+    ('300','300'),
+    ('400','400'),
+    ('500','500'),
+)
+
+
+
 GENDER = (
     
     ('Female','Female'),
@@ -47,7 +59,7 @@ DEPT =(
 
 class User(AbstractUser):
     
-    staff_id  = models.CharField( max_length=50)
+    staff_id  = models.CharField( help_text='Matric Id if student',max_length=50)
     first_name  = models.CharField( max_length=50)
     middle_name  = models.CharField( max_length=50,blank=True)
     surname = models.CharField( max_length=50)
@@ -109,7 +121,7 @@ class UniversityStaff(models.Model):
     designation  = models.CharField(help_text='As written in appointment letter', max_length=50)
     session = models.ForeignKey("Session", on_delete=models.CASCADE)
     blood_group  = models.CharField(choices= BLOOD_GROUP,max_length=3)
-    #passport = models.ImageField( upload_to='staff/passport',)
+    passport = models.ImageField( upload_to='staff/passport',default='programmer.png')
     created_at = models.DateTimeField(auto_now_add=True)
 
     
@@ -129,7 +141,7 @@ class UniversityStaff(models.Model):
 class Postgrad(models.Model):
     fellow = models.ForeignKey("User", on_delete=models.CASCADE)
 
-    staff_id  = models.CharField( max_length=50)
+    staff_id  = models.CharField(help_text='Matric Id if student', max_length=50)
     first_name  = models.CharField( max_length=50)
     middle_name  = models.CharField( max_length=50,blank=True)
     surname = models.CharField( max_length=50)
@@ -154,4 +166,58 @@ class Postgrad(models.Model):
     def get_absolute_url(self):
         return reverse("Postgrad_detail", kwargs={"pk": self.pk})
 
+class Undergrad(models.Model):
+    fellow = models.ForeignKey("User", on_delete=models.CASCADE)
 
+    matric_id  = models.CharField( max_length=50)
+    first_name  = models.CharField( max_length=50)
+    middle_name  = models.CharField( max_length=50,blank=True)
+    surname = models.CharField( max_length=50)
+    gender = models.CharField(choices= GENDER, max_length=6)
+    level  = models.CharField(choices=UGLEVEL_CHOICES, max_length=10)
+    session = models.ForeignKey("Session", on_delete=models.CASCADE)
+    blood_group  = models.CharField(choices= BLOOD_GROUP,max_length=3)
+    department  = models.CharField(choices= DEPT, max_length=20,default='Nursing')
+    passport = models.ImageField( upload_to='undergrad/passport',)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    
+
+    class Meta:
+        verbose_name = ("Undergrad")
+        verbose_name_plural = ("Undergrads")
+        ordering= ['-created_at',]
+
+    def __str__(self):
+        return self.fellow.surname
+
+    def get_absolute_url(self):
+        return reverse("Postgrad_detail", kwargs={"pk": self.pk})
+
+
+class VentureStaff(models.Model):
+    fellow = models.ForeignKey("User", on_delete=models.CASCADE)
+
+    staff_id  = models.CharField( max_length=50)
+    first_name  = models.CharField( max_length=50)
+    middle_name  = models.CharField( max_length=50,blank=True)
+    surname = models.CharField( max_length=50)
+    gender = models.CharField(choices= GENDER, max_length=6)
+    designation  = models.CharField(help_text='As written in appointment letter', max_length=50)
+    session = models.ForeignKey("Session", on_delete=models.CASCADE)
+    blood_group  = models.CharField(choices= BLOOD_GROUP,max_length=3)
+    passport = models.ImageField( upload_to='staff/passport',default='programmer.png')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    
+
+    class Meta:
+        verbose_name = ("VentureStaff")
+        verbose_name_plural = ("Ventures")
+        ordering= ['-created_at',]
+
+    def __str__(self):
+        return self.fellow.surname
+
+    def get_absolute_url(self):
+        return reverse("VentureStaff_detail", kwargs={"pk": self.pk})

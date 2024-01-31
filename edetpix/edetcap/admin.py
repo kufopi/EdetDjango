@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 
 
 # Register your models here.
-from .models import Session,UniversityStaff,User,Postgrad
+from .models import Session,UniversityStaff,User,Postgrad,Undergrad,VentureStaff
 #from import_export.admin import ImportExportModelAdmin
 
 class SessionfinderFilter(admin.SimpleListFilter):
@@ -38,7 +38,19 @@ class PostgradAdmin(ImportExportModelAdmin):
     search_fields =("surname__startswith",)
     
 
+class UndergradAdmin(ImportExportModelAdmin):
+    list_display= ("surname","middle_name","first_name","matric_id","gender","level","department")
+    list_filter = (SessionfinderFilter,"department",'level',)
+    search_fields =("surname__startswith",)
+
+
+class VentureStaffAdmin(ImportExportModelAdmin):
+    list_display= ("surname","middle_name","first_name","staff_id","gender","designation")
+    list_filter = (SessionfinderFilter,"gender",)
+    search_fields =("surname__startswith",)
 
 admin.site.register(UniversityStaff,UniversityStaffAdmin)
 admin.site.register(User)
 admin.site.register(Postgrad,PostgradAdmin)
+admin.site.register(Undergrad,UndergradAdmin)
+admin.site.register(VentureStaff,VentureStaffAdmin)
